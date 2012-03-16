@@ -24,6 +24,10 @@ Gem::Specification.new do |s|
   # If you have other dependencies, add them here
   s.add_development_dependency('aruba', '~> 0.4.6')
   
+  #
+  s.add_dependency('jekyll')
+  s.add_dependency('rdiscount')
+  
   # If you need to check in files that aren't .rb files, add them here
   s.files        = Dir["{lib}/**/*.rb", "bin/*", "templates/**/*","README.rdoc","LICENSE"]
   s.require_path = 'lib'

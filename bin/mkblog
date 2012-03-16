@@ -74,8 +74,11 @@ def generate_project(project)
           if pathname.extname == '.erb'
             #puts pathname.basename.sub(/\.erb$/, '')
             #puts destination
-            #puts File.join(destination,pathname.basename.sub(/\.erb$/, ''))
-            File.open(File.join(destination,pathname.basename.sub(/\.erb$/, '')), 'w') do |file|
+            #puts relative.dirname
+            #puts File.join(destination,relative.dirname,pathname.basename.sub(/\.erb$/, ''))
+            target = File.join(destination,relative.dirname,pathname.basename.sub(/\.erb$/, ''))
+            print pathname.cleanpath, " => ", target,"\n"
+            File.open(target, 'w') do |file|
               file.puts(ERB.new(File.read(path)).result(binding))
             end   
           else

@@ -7,7 +7,7 @@ Author:: Larry Cai (mailto:larry.caiyu@gmail.com)
 Copyright:: Copyright (c) 2012 by  Larry Cai
 License:: Distributes under the Apache License 2.0, see LICENSE in the source distro
 
-This application will generate jekyll based blog, which is hosted in github
+This application will generate {jekyll}[https://github.com/mojombo/jekyll/] based blog, which is hosted in github
 
 == Install
 
@@ -16,9 +16,23 @@ Install:
 
 == Usage
 
-Create new project:
-    mkblog --generate larry # generate jekyll powered blog larry.github.com
-    mkblog --show # list guideline 
+Create new project using your github id, for example you are http://github.com/sample
+    mkblog --generate sample # generate jekyll powered blog sample.github.com
+
+Now you can see the blog http://localhost:4000 by running jekyll server locally
+    cd sample
+    jekyll --server
+    
+You can update the information to your personal data, to make it your own blog. I will 
+tune this step to be better
+
+Create `sample.github.com` under http://github.com/sample, and follow instruction to push.
+
+Follow the {github:pages}[http://pages.github.com/] guideline to put your own blog
+
+If there is problem on encoding, try
+    export LC_CTYPE=en_US.UTF-8
+    export LANG=en_US.UTF-8   
     
 For more help:
     mkblog --help

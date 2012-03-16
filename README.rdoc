@@ -1,0 +1,38 @@
+= `mkblog` - generate jekyll blog hosted in github
+
+{<img src="https://secure.travis-ci.org/larrycai/mkblog.png" />}[http://travis-ci.org/larrycai/mkblog]
+
+Author:: Larry Cai (mailto:larry.caiyu@gmail.com)
+
+Copyright:: Copyright (c) 2012 by  Larry Cai
+License:: Distributes under the Apache License 2.0, see LICENSE in the source distro
+
+This application will generate jekyll based blog, which is hosted in github
+
+== Install
+
+Install:
+    gem install mkblog
+
+== Usage
+
+Create new project:
+    mkblog --generate larry # generate jekyll powered blog larry.github.com
+    mkblog --show # list guideline 
+    
+For more help:
+    mkblog --help
+    
+=== Todo
+
+update theme
+    mkblog --update --theme abc
+
+== Developing for `mkblog`
+
+First, install bundler:
+    gem install bundler
+
+Get the development dependencies
+    bundle install
+Most of the code is in `mkblog.rb`.

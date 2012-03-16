@@ -1,0 +1,10 @@
+*.gem
+*~
+pkg
+html
+sample
+.yardoc
+*.github.com
+doc
+.#~
+Gemfile.lock

@@ -1,0 +1,8 @@
+language: ruby
+before_script:
+  - uname -a
+  - gem env
+script: "bundle exec rake"  
+rvm:
+  - 1.9.3 
+

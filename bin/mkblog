@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'optparse'
+require 'fileutils'
+require 'erb'
+require 'yaml'
+require 'pathname'
+
+include FileUtils
+
+def main()
+    options = {
+        
+    }
+    option_parser = OptionParser.new do |opts|
+        executable_name = File.basename($PROGRAM_NAME)
+        opts.banner = "make jekyll blog which hosted in github
+        Usage: #{executable_name} [options]    
+        "
+        opts.on("-d","--debug","debug") do 
+            options["debug"] = true
+        end
+
+        opts.on("-g","--generate project","generate blog under project.github.com") do |name|
+            unless name =~ /^[a-zA-Z0-9]+$/
+                raise ArgumentError,"name should be [a-zA-Z0-9]"
+            end
+            options["command"] = "generate"
+            options["name"] = name
+        end 
+        opts.on("-s","--show","show how to continue") do 
+            options["command"] = "show"
+        end          
+    end
+
+    option_parser.parse!
+
+    puts options.inspect if options["debug"]
+    
+    case options["command"] 
+    when "generate" then generate_project(options["name"])
+    when "show" then showhelp()
+    else puts "--help for help"
+    end    
+end
+
+def showhelp()
+    puts "1. update your personal information in theme (TODO)"
+    puts "2. create project in github.com and push this project"
+    puts "3. follow http://pages.github.com/"    
+end
+# http://stackoverflow.com/questions/5074327/most-appropriate-way-to-generate-directory-of-files-from-directory-of-template-f
+def generate_project(project)
+    destination = project + ".github.com"
+    source = File.dirname(__FILE__)+"/../templates"
+    #puts "generate project \"#{destination}\" from source \"#{source}\""
+    FileUtils.rmtree(destination)
+    FileUtils.mkdir_p(destination)
+    sourceroot=Pathname.new(source)
+    sourcerealpath = sourceroot.cleanpath
+    puts "generate project \"#{destination}\" from source \"#{sourcerealpath}\""     
+    Dir.glob(File.join(source, '**/*')).each do |path|
+      pathname = Pathname.new(path)
+      relative = pathname.relative_path_from(sourceroot)
+      #puts "parent:" , sourceroot
+      #puts "relative:", relative
+      if File.directory?(pathname) 
+        destdir = File.join(destination, relative.dirname)
+        #puts "create #{destdir} "
+        FileUtils.mkdir_p(destdir) 
+      else
+          FileUtils.mkdir_p(File.join(destination, relative.dirname))
+          if pathname.extname == '.erb'
+            #puts pathname.basename.sub(/\.erb$/, '')
+            #puts destination
+            #puts File.join(destination,pathname.basename.sub(/\.erb$/, ''))
+            File.open(File.join(destination,pathname.basename.sub(/\.erb$/, '')), 'w') do |file|
+              file.puts(ERB.new(File.read(path)).result(binding))
+            end   
+          else
+            print pathname.cleanpath, " => ", File.join(destination, relative.dirname),"\n"
+            FileUtils.cp(pathname, File.join(destination, relative.dirname))
+          end
+      end
+    end
+end
+
+main
+

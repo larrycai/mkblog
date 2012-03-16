@@ -8,6 +8,6 @@ Feature: mkblog
       """
     And the output should contain:
       """
-      -c, --config CONFIG              config file
+      -g, --generate project           generate blog under project.github.com
       """    
       

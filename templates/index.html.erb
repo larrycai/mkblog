@@ -1,6 +1,6 @@
 ---
 layout: master
-title: Larry Cai's blog on the github
+title: <%= username %>
 full_posts: 3
 ---
 
@@ -25,7 +25,7 @@ full_posts: 3
     <div class="sidebar-item">
     <dl>
       <dt>邮件：</dt>
-      <dd>larry.caiyu AT gmail.com </dd>
+      <dd><%= email %></dd>
 
       <dt>微博：</dt>
       <dd><a href="http://weibo.com/larrycaiyu">http://weibo.com/larrycaiyu</a></dd>
@@ -39,7 +39,7 @@ full_posts: 3
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  $.githubUser('<%= project %>', function(data) {
+  $.githubUser('<%= account %>', function(data) {
     $('#github-projects').html('');
     
     var repos = data.user.repositories;

@@ -11,7 +11,7 @@ include FileUtils
 
 def main()
     options = {
-        
+        "debug" => false
     }
     option_parser = OptionParser.new do |opts|
         executable_name = File.basename($PROGRAM_NAME)
@@ -27,7 +27,7 @@ def main()
                 raise ArgumentError,"name should be [a-zA-Z0-9]"
             end
             options["command"] = "generate"
-            options["name"] = name
+            options["account"] = name
         end 
         opts.on("-s","--show","show how to continue") do 
             options["command"] = "show"
@@ -39,8 +39,8 @@ def main()
     puts options.inspect if options["debug"]
     
     case options["command"] 
-    when "generate" then generate_project(options["name"])
-    when "show" then showhelp()
+    when "generate" then generate_project(options["account"],options["debug"])
+    when "show" then showhelp() 
     else puts "--help for help"
     end    
 end
@@ -50,9 +50,33 @@ def showhelp()
     puts "2. create project in github.com and push this project"
     puts "3. follow http://pages.github.com/"    
 end
+
+def guess()
+    username = "Larry Cai"
+    email = "larry.caiyu@gmail.com"
+    
+    # scan ~/.gitconfig
+    gitconfig = ".gitconfig"
+    gconf = File.join(Dir.home, gitconfig)
+    if File.exists?(gconf)
+        puts "..scan `#{gconf}`"
+        File.open(gconf).each do |record|
+            name,value = record.split("=")
+            name.gsub!(/\t*\s*/,'')
+            # puts "[#{name}]" + ":" 
+            case name
+            when "name"  then username = value.gsub(/\t*\s*\n*/,'')
+            when "email" then email = value.gsub(/ /,'')
+            end
+        end
+    end
+    # puts username + ":" + email
+    return username,email
+end
 # http://stackoverflow.com/questions/5074327/most-appropriate-way-to-generate-directory-of-files-from-directory-of-template-f
-def generate_project(project)
-    destination = project + ".github.com"
+def generate_project(account,debug)
+    destination = account + ".github.com"
+    username,email = guess()
     source = File.dirname(__FILE__)+"/../templates"
     #puts "generate project \"#{destination}\" from source \"#{source}\""
     FileUtils.rmtree(destination)
@@ -77,16 +101,27 @@ def generate_project(project)
             #puts relative.dirname
             #puts File.join(destination,relative.dirname,pathname.basename.sub(/\.erb$/, ''))
             target = File.join(destination,relative.dirname,pathname.basename.sub(/\.erb$/, ''))
-            print pathname.cleanpath, " => ", target,"\n"
+            if debug == true
+                print " ", pathname.cleanpath, " => ", target,"\n"
+            end
             File.open(target, 'w') do |file|
               file.puts(ERB.new(File.read(path)).result(binding))
             end   
           else
-            print pathname.cleanpath, " => ", File.join(destination, relative.dirname),"\n"
+            if debug == true
+                print " ", pathname.cleanpath, " => ", File.join(destination, relative.dirname),"\n"
+            end
             FileUtils.cp(pathname, File.join(destination, relative.dirname))
           end
       end
     end
+      puts 
+      puts "The blog is now yours"
+      puts "=> name:" + username
+      puts "=> email:" + email
+      puts "=> github: http://github.com/" + account
+      puts "please run `cd " + account + ".github.com/"  + " ; jekyll --server'"
+      puts "Then and open browser to http://localhost:4000 see the magic"
 end
 
 main

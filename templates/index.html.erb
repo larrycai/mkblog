@@ -39,7 +39,7 @@ full_posts: 3
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  $.githubUser('larrycai', function(data) {
+  $.githubUser('<%= project %>', function(data) {
     $('#github-projects').html('');
     
     var repos = data.user.repositories;

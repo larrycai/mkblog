@@ -11,7 +11,9 @@ include FileUtils
 
 def main()
     options = {
-        "debug" => false
+        "debug" => false,
+        "username" => "",
+        "email" => ""
     }
     option_parser = OptionParser.new do |opts|
         executable_name = File.basename($PROGRAM_NAME)
@@ -21,7 +23,12 @@ def main()
         opts.on("-d","--debug","debug") do 
             options["debug"] = true
         end
-
+        opts.on("-u","--username name","your name in blog, like \"Larry Cai\"") do | name|
+            options["username"] = name
+        end
+        opts.on("-e","--email email","email could be contacted in blog") do |name|
+            options["email"] = name
+        end
         opts.on("-g","--generate project","generate blog under project.github.com") do |name|
             unless name =~ /^[a-zA-Z0-9]+$/
                 raise ArgumentError,"name should be [a-zA-Z0-9]"
@@ -39,7 +46,7 @@ def main()
     puts options.inspect if options["debug"]
     
     case options["command"] 
-    when "generate" then generate_project(options["account"],options["debug"])
+    when "generate" then generate_project(options["account"],options["username"],options["email"],options["debug"])
     when "show" then showhelp() 
     else puts "--help for help"
     end    
@@ -74,9 +81,12 @@ def guess()
     return username,email
 end
 # http://stackoverflow.com/questions/5074327/most-appropriate-way-to-generate-directory-of-files-from-directory-of-template-f
-def generate_project(account,debug)
+def generate_project(account,username,email,debug)
     destination = account + ".github.com"
-    username,email = guess()
+    #puts username, email
+    gitusername,gitemail = guess() 
+    username = gitusername if username.empty?
+    email = gitemail if email.empty?
     source = File.dirname(__FILE__)+"/../templates"
     #puts "generate project \"#{destination}\" from source \"#{source}\""
     FileUtils.rmtree(destination)
